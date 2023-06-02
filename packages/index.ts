@@ -1,4 +1,6 @@
+export * from './clone';
 export * from './debounce';
-export * from './throttle';
+export * from './link';
 export * from './smoothScroll';
+export * from './throttle';
 export * from './urlSearch';
