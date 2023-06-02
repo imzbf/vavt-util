@@ -1,5 +1,6 @@
 import { deepClone } from '~/clone';
 import { debounce } from '~/index';
+import { download, linkTo } from '~/link';
 import { objToSearch, searchToObj } from '~/urlSearch';
 
 document.documentElement.addEventListener(
@@ -44,3 +45,13 @@ console.log(
     sss,
   })
 );
+
+window.onload = () => {
+  document.querySelector('#link-to')?.addEventListener('click', () => {
+    linkTo('https://github.com');
+  });
+
+  document.querySelector('#download')?.addEventListener('click', () => {
+    download('https://www.cockos.com/licecap/licecap132.dmg');
+  });
+};
