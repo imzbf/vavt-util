@@ -58,6 +58,15 @@ export const deepClone = <T>(obj: T, hash = new WeakMap()): T => {
     return clonedMap as T;
   }
 
+  if (obj instanceof Set) {
+    const clonedSet = new Set();
+    hash.set(obj, clonedSet);
+    for (let value of obj) {
+      clonedSet.add(deepClone(value, hash));
+    }
+    return clonedSet as T;
+  }
+
   if (Array.isArray(obj)) {
     const clonedArr = [] as unknown as T extends (infer U)[] ? U[] : never;
     hash.set(obj, clonedArr);

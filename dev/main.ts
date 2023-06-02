@@ -27,6 +27,9 @@ const bbb = { aaa: {} };
 aaa.bbb = bbb;
 bbb.aaa = aaa;
 
+const sss = new Set();
+sss.add('sss');
+
 console.log(
   '深克隆',
   deepClone({
@@ -38,5 +41,6 @@ console.log(
     },
     aaa,
     bbb,
+    sss,
   })
 );
