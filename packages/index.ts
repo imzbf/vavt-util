@@ -1,3 +1,4 @@
-export { debounce } from './debounce';
-export { throttle } from './throttle';
-export { smoothScroll } from './smoothScroll';
+export * from './debounce';
+export * from './throttle';
+export * from './smoothScroll';
+export * from './urlSearch';
