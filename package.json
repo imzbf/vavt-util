@@ -1,6 +1,6 @@
 {
   "name": "@vavt/util",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "keywords": [
     "js",
@@ -13,10 +13,10 @@
   },
   "scripts": {
     "dev": "tsx ./scripts/dev",
-    "lib": "tsx ./scripts/build.lib",
-    "lib:es": "tsx ./scripts/build.lib es",
-    "lib:cjs": "tsx ./scripts/build.lib cjs type",
-    "lib:umd": "tsx ./scripts/build.lib umd"
+    "build": "tsx ./scripts/build.lib",
+    "build:es": "tsx ./scripts/build.lib es",
+    "build:cjs": "tsx ./scripts/build.lib cjs type",
+    "build:umd": "tsx ./scripts/build.lib umd"
   },
   "homepage": "https://imzbf.github.io/vavt-util/",
   "repository": {
@@ -29,14 +29,9 @@
   "files": [
     "lib"
   ],
-  "type": "module",
   "types": "./lib/types/index.d.ts",
   "main": "./lib/cjs/index.cjs",
   "module": "./lib/es/index.mjs",
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.1.0",
     "tsx": "^3.12.7",
