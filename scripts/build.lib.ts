@@ -16,27 +16,25 @@ const argvs = process.argv.slice(2);
 const forceBuildType = argvs.indexOf('type') !== -1;
 
 // 构建目标版本列表
-let formats = argvs.filter((i: LibraryFormats) =>
-  defaultFormats.includes(i)
-) as LibraryFormats[];
+let formats = argvs.filter((i: LibraryFormats) => defaultFormats.includes(i)) as LibraryFormats[];
 
 // 没有指定就打包全部
 formats = formats.length === 0 ? defaultFormats : formats;
 
 !(async () => {
   const moduleEntry = {
-    index: resolvePath('packages'),
+    index: resolvePath('packages')
   };
 
   const entries = {
     es: moduleEntry,
     cjs: moduleEntry,
-    umd: resolvePath('packages'),
+    umd: resolvePath('packages')
   };
 
   const extnames = {
     es: 'mjs',
-    cjs: 'cjs',
+    cjs: 'cjs'
   };
 
   removeDir(resolvePath('lib'));
@@ -48,25 +46,25 @@ formats = formats.length === 0 ? defaultFormats : formats;
         publicDir: false,
         resolve: {
           alias: {
-            '~': resolvePath('packages'),
-          },
+            '~': resolvePath('packages')
+          }
         },
         plugins: [
           (t === 'es' || forceBuildType) &&
             dts({
               outputDir: resolvePath('lib/types'),
-              include: [resolvePath('packages')],
-            }),
+              include: [resolvePath('packages')]
+            })
         ],
         css: {
           modules: {
-            localsConvention: 'camelCase', // 默认只支持驼峰，修改为同事支持横线和驼峰
+            localsConvention: 'camelCase' // 默认只支持驼峰，修改为同事支持横线和驼峰
           },
           preprocessorOptions: {
             less: {
-              javascriptEnabled: true,
-            },
-          },
+              javascriptEnabled: true
+            }
+          }
         },
         build: {
           emptyOutDir: false,
@@ -88,7 +86,7 @@ formats = formats.length === 0 ? defaultFormats : formats;
                   return 'umd/index.js';
                 }
               }
-            },
+            }
           },
           rollupOptions: {
             // umd可能不需要移除部分依赖库
@@ -96,10 +94,10 @@ formats = formats.length === 0 ? defaultFormats : formats;
             output: {
               chunkFileNames: `${t}/chunks/[hash].${extnames[t]}`,
               assetFileNames: '[name][extname]',
-              globals: t === 'umd' ? {} : {},
-            },
-          },
-        },
+              globals: t === 'umd' ? {} : {}
+            }
+          }
+        }
       });
     })
   );

@@ -13,8 +13,9 @@
     "build:es": "tsx ./scripts/build.lib es",
     "build:cjs": "tsx ./scripts/build.lib cjs type",
     "build:umd": "tsx ./scripts/build.lib umd",
-    "lint": "eslint --ext .ts ./packages/**",
-    "lint:fix": "eslint --fix --ext .ts ./packages/**"
+    "lint": "eslint --ext .ts ./",
+    "lint:fix": "eslint --fix --ext .ts ./",
+    "prepare": "husky install"
   },
   "homepage": "https://imzbf.github.io/vavt-util/",
   "repository": {
@@ -37,10 +38,20 @@
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "tsx": "^3.12.7",
     "typescript": "^5.0.2",
     "vite": "^4.3.8",
     "vite-plugin-dts": "^2.3.0"
+  },
+  "lint-staged": {
+    "**/*.{ts,md}": [
+      "prettier --write"
+    ],
+    "**/*.ts": [
+      "eslint --quiet --fix"
+    ]
   }
 }
