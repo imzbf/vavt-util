@@ -61,7 +61,7 @@ export const deepClone = <T>(obj: T, hash = new WeakMap()): T => {
   if (obj instanceof Set) {
     const clonedSet = new Set();
     hash.set(obj, clonedSet);
-    for (let value of obj) {
+    for (const value of obj) {
       clonedSet.add(deepClone(value, hash));
     }
     return clonedSet as T;
@@ -76,10 +76,10 @@ export const deepClone = <T>(obj: T, hash = new WeakMap()): T => {
     return clonedArr as T;
   }
 
-  const clonedObj = {} as { [key: string]: any };
+  const clonedObj = {} as { [key: string]: unknown };
   hash.set(obj, clonedObj);
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       clonedObj[key] = deepClone(obj[key], hash);
     }
   }
