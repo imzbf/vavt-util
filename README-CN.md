@@ -27,17 +27,14 @@ Js 工具库
     // 是否新窗口打开，默认true
     _blank: false,
     // 是否可访问opener，默认true
-    nofollow: false,
+    nofollow: false
   });
   ```
 
 - `download`：基础下载，仅支持`get`，同时支持下载`base64`为图片
 
   ```js
-  download(
-    'https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip',
-    'v1.0.0.zip'
-  );
+  download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
 
   download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
   ```
@@ -79,6 +76,26 @@ Js 工具库
   ```js
   objToSearch({ age: 18, name: 'lili', h: [1, 2] });
   // 'age=18&name=lili&h=1&h=2'
+  ```
+
+- `objectSort`：将对象数组进行关键词排序
+
+  ```js
+  objectSort(
+    [
+      { name: 'B', age: 17 },
+      { name: 'A', age: 13 },
+      { name: 'D', age: 27 },
+      { name: 'C', age: 23 }
+    ],
+    (item) => item.age
+  );
+  // [
+  //   { name: 'A', age: 13 },
+  //   { name: 'B', age: 17 },
+  //   { name: 'C', age: 23 },
+  //   { name: 'D', age: 27 }
+  // ];
   ```
 
 ...更多待更新

@@ -1,6 +1,7 @@
 import { deepClone } from '~/clone';
 import { debounce } from '~/index';
 import { download, linkTo } from '~/link';
+import { objectSort } from '~/objectSort';
 import { objToSearch, searchToObj } from '~/urlSearch';
 
 document.documentElement.addEventListener(
@@ -16,12 +17,12 @@ console.log(
   objToSearch({
     '1': '2',
     a: new Date(),
-    dd: ['123', '456'],
+    dd: ['123', '456']
   })
 );
 
 const aaa = {
-  bbb: {},
+  bbb: {}
 };
 const bbb = { aaa: {} };
 
@@ -38,11 +39,11 @@ console.log(
     a: /^\?/g,
     b: 'bbbb',
     c: {
-      d: 'dddd',
+      d: 'dddd'
     },
     aaa,
     bbb,
-    sss,
+    sss
   })
 );
 
@@ -55,3 +56,28 @@ window.onload = () => {
     download('https://www.cockos.com/licecap/licecap132.dmg');
   });
 };
+
+console.log(
+  '\n对象排序:\n',
+  objectSort(
+    [
+      {
+        name: 'B',
+        age: 17
+      },
+      {
+        name: 'A',
+        age: 13
+      },
+      {
+        name: 'D',
+        age: 27
+      },
+      {
+        name: 'C',
+        age: 23
+      }
+    ],
+    (item) => item.age
+  )
+);

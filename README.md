@@ -27,17 +27,14 @@ Js Library
     // Open on a new window, default true
     _blank: false,
     // Access opener, default true
-    nofollow: false,
+    nofollow: false
   });
   ```
 
 - `download`：Only can be used for `get` request, or base64
 
   ```js
-  download(
-    'https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip',
-    'v1.0.0.zip'
-  );
+  download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
 
   download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
   ```
@@ -74,11 +71,31 @@ Js Library
   // { age: 18, name: 'lili', h: [1, 2] }
   ```
 
-- `objToSearch`：Convert object to `location.search`
+- `objToSearch`: Convert object to `location.search`
 
   ```js
   objToSearch({ age: 18, name: 'lili', h: [1, 2] });
   // 'age=18&name=lili&h=1&h=2'
+  ```
+
+- `objectSort`: Sort object arrays by keyword
+
+  ```js
+  objectSort(
+    [
+      { name: 'B', age: 17 },
+      { name: 'A', age: 13 },
+      { name: 'D', age: 27 },
+      { name: 'C', age: 23 }
+    ],
+    (item) => item.age
+  );
+  // [
+  //   { name: 'A', age: 13 },
+  //   { name: 'B', age: 17 },
+  //   { name: 'C', age: 23 },
+  //   { name: 'D', age: 27 }
+  // ];
   ```
 
 ...More to be updated
