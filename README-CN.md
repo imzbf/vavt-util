@@ -2,7 +2,13 @@
 
 [English](https://github.com/imzbf/vavt-util) \| 中文
 
-Js 工具库
+一个 JavaScript 工具库
+
+```shell
+yarn add @vavt/util
+# or
+npm i @vavt/util
+```
 
 ## 使用
 

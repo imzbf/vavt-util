@@ -2,7 +2,13 @@
 
 English \| [中文](https://github.com/imzbf/vavt-util/blob/develop/README-CN.md)
 
-Js Library
+A JavaScript library.
+
+```shell
+yarn add @vavt/util
+# or
+npm i @vavt/util
+```
 
 ## Usage
 
