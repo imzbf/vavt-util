@@ -5,10 +5,10 @@
  * @param ms 防抖延迟
  * @returns
  */
-export const debounce = (fn: (...params: Array<unknown>) => unknown, ms = 200) => {
+export const debounce = <T, V>(fn: (...params: Array<T>) => V, ms = 200) => {
   let timer = 0;
 
-  return (...params: Array<unknown>) => {
+  return (...params: Array<T>) => {
     return new Promise((rev) => {
       if (timer) {
         clearTimeout(timer);

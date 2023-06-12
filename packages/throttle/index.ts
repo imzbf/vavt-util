@@ -5,18 +5,18 @@
  * @param ms 节流延迟
  * @returns
  */
-export const throttle = (fn: (...params: Array<unknown>) => unknown, ms = 200) => {
+export const throttle = <T, V>(fn: (...params: Array<T>) => V, ms = 200) => {
   let start = 0;
-  let _params: null | Array<unknown> = null;
+  let _params: null | Array<T> = null;
 
-  return (...params: Array<unknown>) => {
+  return (...params: Array<T>) => {
     const handler = (timeStamp: number) => {
       if (start === 0) {
         start = timeStamp;
       }
 
       if (timeStamp - start >= ms) {
-        fn.apply(this, _params as Array<unknown>);
+        fn.apply(this, _params as Array<T>);
         _params = null;
         start = 0;
       } else {
