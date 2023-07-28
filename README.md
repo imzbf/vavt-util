@@ -104,6 +104,14 @@ npm i @vavt/util
   // ];
   ```
 
+- `draggingScroll`: Dragging and scrolling element while holding it down.
+
+  ```js
+  const removeListener = draggingScroll(document.getElementById('id'));
+
+  // removeListener()
+  ```
+
 ...More to be updated
 
 ## Develop

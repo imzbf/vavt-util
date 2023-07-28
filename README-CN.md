@@ -104,6 +104,14 @@ npm i @vavt/util
   // ];
   ```
 
+- `draggingScroll`：按住元素时，拖拽滚动元素
+
+  ```js
+  const removeListener = draggingScroll(document.getElementById('id'));
+
+  // removeListener()
+  ```
+
 ...更多待更新
 
 ## 开发

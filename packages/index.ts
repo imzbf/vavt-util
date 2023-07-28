@@ -5,3 +5,4 @@ export * from './smoothScroll';
 export * from './throttle';
 export * from './urlSearch';
 export * from './objectSort';
+export * from './draggingScroll';
