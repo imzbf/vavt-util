@@ -11,7 +11,7 @@ export const objectSort = <T>(
   getParam: (item: T) => number,
   order: 'asc' | 'desc' = 'asc'
 ): Array<T> => {
-  return list.sort((a, b) => {
+  return [...list].sort((a, b) => {
     if (order === 'asc') {
       return getParam(a) - getParam(b);
     } else {
