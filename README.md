@@ -62,6 +62,13 @@ npm i @vavt/util
   );
   ```
 
+  Create independent scrolling methods
+
+  ```js
+  import { createSmoothScroll } from '@vavt/util';
+  const smoothScroll = createSmoothScroll();
+  ```
+
 - `throttle`: Default delay of 200 ms
 
   ```js

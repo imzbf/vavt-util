@@ -62,6 +62,13 @@ npm i @vavt/util
   );
   ```
 
+  创建独立的滚动方法
+
+  ```js
+  import { createSmoothScroll } from '@vavt/util';
+  const smoothScroll = createSmoothScroll();
+  ```
+
 - `throttle`：函数节流，默认延迟 200 毫秒
 
   ```js
