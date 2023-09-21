@@ -12,112 +12,164 @@ npm i @vavt/util
 
 ## 使用
 
-- `deepClone`：深克隆，支持大部分基础引用类型
+### deepClone
 
-  ```js
-  const newObj = deepClone({ a: 1 });
-  ```
+深克隆，支持大部分基础引用类型
 
-- `debounce`：函数防抖，默认延迟 200 毫秒
+```js
+const newObj = deepClone({ a: 1 });
+```
 
-  ```js
-  const handler = debounce(() => {
-    // 做点什么
-  }, 100);
-  ```
+### debounce
 
-- `linkTo`：模拟跳转
+函数防抖，默认延迟 200 毫秒
 
-  ```js
-  linkTo('https://github.com/imzbf/vavt-util', {
-    // 是否新窗口打开，默认true
-    _blank: false,
-    // 是否可访问opener，默认true
-    nofollow: false
-  });
-  ```
+```js
+const handler = debounce(() => {
+  // 做点什么
+}, 100);
+```
 
-- `download`：基础下载，仅支持`get`，同时支持下载`base64`为图片
+### linkTo
 
-  ```js
-  download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
+模拟跳转
 
-  download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
-  ```
+```js
+linkTo('https://github.com/imzbf/vavt-util', {
+  // 是否新窗口打开，默认true
+  _blank: false,
+  // 是否可访问opener，默认true
+  nofollow: false
+});
+```
 
-- `smoothScroll`：平滑滚动至指定高度
+### download
 
-  ```js
-  smoothScroll(
-    // 滚动元素
-    document.documentElement,
-    // 滚动至100px高度
-    100,
-    // 滚动结束回调
-    () => {
-      console.log('滚动结束');
-    },
-    // 是否延迟执行滚动结束回调，默认100毫秒
-    50
-  );
-  ```
+基础下载，仅支持`get`，同时支持下载`base64`为图片
 
-  创建独立的滚动方法
+```js
+download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
 
-  ```js
-  import { createSmoothScroll } from '@vavt/util';
-  const smoothScroll = createSmoothScroll();
-  ```
+download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
+```
 
-- `throttle`：函数节流，默认延迟 200 毫秒
+### smoothScroll
 
-  ```js
-  const handler = throttle(() => {
-    // 做点什么
-  }, 100);
-  ```
+平滑滚动至指定高度
 
-- `searchToObj`：将`location.search`转换为对象结构
+```js
+smoothScroll(
+  // 滚动元素
+  document.documentElement,
+  // 滚动至100px高度
+  100,
+  // 滚动结束回调
+  () => {
+    console.log('滚动结束');
+  },
+  // 是否延迟执行滚动结束回调，默认100毫秒
+  50
+);
+```
 
-  ```js
-  searchToObj('?age=18&name=lili&h=1&h=2');
-  // { age: 18, name: 'lili', h: [1, 2] }
-  ```
+创建独立的滚动方法
 
-- `objToSearch`：将对象转换为`location.search`结构
+```js
+import { createSmoothScroll } from '@vavt/util';
+const smoothScroll = createSmoothScroll();
+```
 
-  ```js
-  objToSearch({ age: 18, name: 'lili', h: [1, 2] });
-  // 'age=18&name=lili&h=1&h=2'
-  ```
+### throttle
 
-- `objectSort`：将对象数组进行关键词排序
+函数节流，默认延迟 200 毫秒
 
-  ```js
-  objectSort(
-    [
-      { name: 'B', age: 17 },
-      { name: 'A', age: 13 },
-      { name: 'D', age: 27 },
-      { name: 'C', age: 23 }
-    ],
-    (item) => item.age
-  );
-  // [
-  //   { name: 'A', age: 13 },
-  //   { name: 'B', age: 17 },
-  //   { name: 'C', age: 23 },
-  //   { name: 'D', age: 27 }
-  // ];
-  ```
+```js
+const handler = throttle(() => {
+  // 做点什么
+}, 100);
+```
 
-- `draggingScroll`：按住元素时，拖拽滚动元素
+### searchToObj
 
-  ```js
-  const removeListener = draggingScroll(document.getElementById('id'));
+将`location.search`转换为对象结构
 
-  // removeListener()
-  ```
+```js
+searchToObj('?age=18&name=lili&h=1&h=2');
+// { age: 18, name: 'lili', h: [1, 2] }
+```
+
+### objToSearch
+
+将对象转换为`location.search`结构
+
+```js
+objToSearch({ age: 18, name: 'lili', h: [1, 2] });
+// 'age=18&name=lili&h=1&h=2'
+```
+
+### objectSort
+
+将对象数组进行关键词排序
+
+```js
+objectSort(
+  [
+    { name: 'F', age: 25 },
+    { name: 'D', age: null },
+    { name: 'E', age: 20 },
+    { name: 'H', age: 30 },
+    { name: 'A', age: undefined },
+    { name: 'J', age: 'b' },
+    { name: 'K', age: 'c' },
+    { name: 'I', age: 'a' },
+    { name: 'B', age: undefined },
+    { name: 'G', age: 25 },
+    { name: 'C', age: undefined }
+  ],
+  (item) => item.age
+);
+// [
+//   { name: 'A', age: undefined },
+//   { name: 'B', age: undefined },
+//   { name: 'C', age: undefined },
+//   { name: 'D', age: null },
+//   { name: 'E', age: 20 },
+//   { name: 'F', age: 25 },
+//   { name: 'G', age: 25 },
+//   { name: 'H', age: 30 },
+//   { name: 'I', age: 'a' },
+//   { name: 'J', age: 'b' },
+//   { name: 'K', age: 'c' }
+// ];
+```
+
+### draggingScroll
+
+按住元素时，拖拽滚动元素
+
+```js
+const removeListener = draggingScroll(document.getElementById('id'));
+
+// removeListener()
+```
+
+### uuid
+
+生成一串随机字符
+
+```js
+console.log(uuid());
+// lmsimogsk7pukfcia4
+```
+
+### isNumber
+
+判断一个字符串是否是数字，科学计数法也会被认为是数字
+
+```js
+console.log(isNumber('0.23e-1'));
+// true
+```
 
 ...更多待更新
 

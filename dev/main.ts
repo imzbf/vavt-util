@@ -1,15 +1,19 @@
-import { deepClone } from '~/clone';
-import { debounce } from '~/index';
-import { download, linkTo } from '~/link';
-import { objectSort } from '~/objectSort';
-import { objToSearch, searchToObj } from '~/urlSearch';
+import {
+  debounce,
+  isNumber,
+  download,
+  linkTo,
+  deepClone,
+  objectSort,
+  objToSearch,
+  searchToObj
+} from '~/index';
 
-document.documentElement.addEventListener(
-  'click',
+document.documentElement.addEventListener('click', () => {
   debounce(() => {
     console.log('\n防抖', 'debounce');
-  })
-);
+  });
+});
 
 console.log('\nSearch转对象', searchToObj('?1=2&dd=123&dd=456'));
 console.log(
@@ -57,27 +61,24 @@ window.onload = () => {
   });
 };
 
-console.log(
-  '\n对象排序:\n',
+console.log('\n对象排序:\n');
+console.table(
   objectSort(
     [
-      {
-        name: 'B',
-        age: 17
-      },
-      {
-        name: 'A',
-        age: 13
-      },
-      {
-        name: 'D',
-        age: 27
-      },
-      {
-        name: 'C',
-        age: 23
-      }
+      { name: 'F', age: 25 },
+      { name: 'D', age: null },
+      { name: 'E', age: 20 },
+      { name: 'H', age: 30 },
+      { name: 'A', age: undefined },
+      { name: 'J', age: 'b' },
+      { name: 'K', age: 'c' },
+      { name: 'I', age: 'a' },
+      { name: 'B', age: undefined },
+      { name: 'G', age: 25 },
+      { name: 'C', age: undefined }
     ],
     (item) => item.age
   )
 );
+
+console.log('\nisNumber\n', isNumber('0.23e-1'));

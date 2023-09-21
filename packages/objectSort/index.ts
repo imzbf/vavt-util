@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /**
  * 对对象列表按照某个字段进行排序
  *
@@ -8,14 +9,33 @@
  */
 export const objectSort = <T>(
   list: Array<T>,
-  getParam: (item: T) => number,
+  getParam: (item: T) => unknown,
   order: 'asc' | 'desc' = 'asc'
 ): Array<T> => {
-  return [...list].sort((a, b) => {
-    if (order === 'asc') {
-      return getParam(a) - getParam(b);
-    } else {
-      return getParam(b) - getParam(a);
+  return list.sort((a, b) => {
+    const compA = getParam(a);
+    const compB = getParam(b);
+
+    // undefined永远是最小的，它比另一个undefined更小
+    if ((compA === undefined && compB !== undefined) || (compA === null && compB !== undefined)) {
+      return order === 'asc' ? -1 : 1;
     }
+
+    if ((compA === null || compA === undefined) && compB === undefined) {
+      return order === 'asc' ? 1 : -1;
+    }
+
+    // compA这里不会是null和undefined，所以compB如果是的话，一定比compA小
+    if (compB === undefined || compB === null) {
+      return order === 'asc' ? 1 : -1;
+    }
+
+    return order == 'asc'
+      ? String(compA).localeCompare(String(compB), undefined, {
+          numeric: true
+        })
+      : String(compB).localeCompare(String(compA), undefined, {
+          numeric: true
+        });
   });
 };

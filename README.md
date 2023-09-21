@@ -12,112 +12,164 @@ npm i @vavt/util
 
 ## Usage
 
-- `deepClone`: Can be used for most basic reference types(`Map`, `Set`, `RegExp`, `Date`)
+### deepClone
 
-  ```js
-  const newObj = deepClone({ a: 1 });
-  ```
+Can be used for most basic reference types(`Map`, `Set`, `RegExp`, `Date`)
 
-- `debounce`: Default delay of 200 ms
+```js
+const newObj = deepClone({ a: 1 });
+```
 
-  ```js
-  const handler = debounce(() => {
-    // Do something
-  }, 100);
-  ```
+### debounce
 
-- `linkTo`: Open a new page.
+Default delay of 200 ms
 
-  ```js
-  linkTo('https://github.com/imzbf/vavt-util', {
-    // Open on a new window, default true
-    _blank: false,
-    // Access opener, default true
-    nofollow: false
-  });
-  ```
+```js
+const handler = debounce(() => {
+  // Do something
+}, 100);
+```
 
-- `download`：Only can be used for `get` request, or base64
+### linkTo
 
-  ```js
-  download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
+Open a new page.
 
-  download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
-  ```
+```js
+linkTo('https://github.com/imzbf/vavt-util', {
+  // Open on a new window, default true
+  _blank: false,
+  // Access opener, default true
+  nofollow: false
+});
+```
 
-- `smoothScroll`: Smooth scrolling to specified height
+### download
 
-  ```js
-  smoothScroll(
-    // Scrolling element
-    document.documentElement,
-    // Scroll to 100px
-    100,
-    // Callback at the end of scrolling
-    () => {
-      console.log('end');
-    },
-    // Whether to delay the execution of the callback at the end of the scrolling, defalut 100ms
-    50
-  );
-  ```
+Only can be used for `get` request, or base64
 
-  Create independent scrolling methods
+```js
+download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
 
-  ```js
-  import { createSmoothScroll } from '@vavt/util';
-  const smoothScroll = createSmoothScroll();
-  ```
+download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
+```
 
-- `throttle`: Default delay of 200 ms
+### smoothScroll
 
-  ```js
-  const handler = throttle(() => {
-    // Do something
-  }, 100);
-  ```
+Smooth scrolling to specified height
 
-- `searchToObj`: Convert `location.search` to object
+```js
+smoothScroll(
+  // Scrolling element
+  document.documentElement,
+  // Scroll to 100px
+  100,
+  // Callback at the end of scrolling
+  () => {
+    console.log('end');
+  },
+  // Whether to delay the execution of the callback at the end of the scrolling, defalut 100ms
+  50
+);
+```
 
-  ```js
-  searchToObj('?age=18&name=lili&h=1&h=2');
-  // { age: 18, name: 'lili', h: [1, 2] }
-  ```
+Create independent scrolling methods
 
-- `objToSearch`: Convert object to `location.search`
+```js
+import { createSmoothScroll } from '@vavt/util';
+const smoothScroll = createSmoothScroll();
+```
 
-  ```js
-  objToSearch({ age: 18, name: 'lili', h: [1, 2] });
-  // 'age=18&name=lili&h=1&h=2'
-  ```
+### throttle
 
-- `objectSort`: Sort object arrays by keyword
+Default delay of 200 ms
 
-  ```js
-  objectSort(
-    [
-      { name: 'B', age: 17 },
-      { name: 'A', age: 13 },
-      { name: 'D', age: 27 },
-      { name: 'C', age: 23 }
-    ],
-    (item) => item.age
-  );
-  // [
-  //   { name: 'A', age: 13 },
-  //   { name: 'B', age: 17 },
-  //   { name: 'C', age: 23 },
-  //   { name: 'D', age: 27 }
-  // ];
-  ```
+```js
+const handler = throttle(() => {
+  // Do something
+}, 100);
+```
 
-- `draggingScroll`: Dragging and scrolling element while holding it down.
+### searchToObj
 
-  ```js
-  const removeListener = draggingScroll(document.getElementById('id'));
+Convert `location.search` to object
 
-  // removeListener()
-  ```
+```js
+searchToObj('?age=18&name=lili&h=1&h=2');
+// { age: 18, name: 'lili', h: [1, 2] }
+```
+
+### objToSearch
+
+Convert object to `location.search`
+
+```js
+objToSearch({ age: 18, name: 'lili', h: [1, 2] });
+// 'age=18&name=lili&h=1&h=2'
+```
+
+### objectSort
+
+Sort object arrays by keyword
+
+```js
+objectSort(
+  [
+    { name: 'F', age: 25 },
+    { name: 'D', age: null },
+    { name: 'E', age: 20 },
+    { name: 'H', age: 30 },
+    { name: 'A', age: undefined },
+    { name: 'J', age: 'b' },
+    { name: 'K', age: 'c' },
+    { name: 'I', age: 'a' },
+    { name: 'B', age: undefined },
+    { name: 'G', age: 25 },
+    { name: 'C', age: undefined }
+  ],
+  (item) => item.age
+);
+// [
+//   { name: 'A', age: undefined },
+//   { name: 'B', age: undefined },
+//   { name: 'C', age: undefined },
+//   { name: 'D', age: null },
+//   { name: 'E', age: 20 },
+//   { name: 'F', age: 25 },
+//   { name: 'G', age: 25 },
+//   { name: 'H', age: 30 },
+//   { name: 'I', age: 'a' },
+//   { name: 'J', age: 'b' },
+//   { name: 'K', age: 'c' }
+// ];
+```
+
+### draggingScroll
+
+Dragging and scrolling element while holding it down.
+
+```js
+const removeListener = draggingScroll(document.getElementById('id'));
+
+// removeListener()
+```
+
+### uuid
+
+Generate a string of random characters.
+
+```js
+console.log(uuid());
+// lmsimogsk7pukfcia4
+```
+
+### isNumber
+
+To determine whether a string is a number, Scientific notation will also be considered as a number.
+
+```js
+console.log(isNumber('0.23e-1'));
+// true
+```
 
 ...More to be updated
 
