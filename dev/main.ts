@@ -67,8 +67,8 @@ console.table(
     [
       { name: 'F', age: 25 },
       { name: 'D', age: null },
-      { name: 'E', age: 20 },
-      { name: 'H', age: 30 },
+      { name: 'E', age: 0.001730103806228428 },
+      { name: 'H', age: 0.09731833910034607 },
       { name: 'A', age: undefined },
       { name: 'J', age: 'b' },
       { name: 'K', age: 'c' },

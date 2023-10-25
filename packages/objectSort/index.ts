@@ -1,4 +1,7 @@
 /* eslint-disable indent */
+
+import { isNumber } from '..';
+
 /**
  * 对对象列表按照某个字段进行排序
  *
@@ -28,6 +31,13 @@ export const objectSort = <T>(
     // compA这里不会是null和undefined，所以compB如果是的话，一定比compA小
     if (compB === undefined || compB === null) {
       return order === 'asc' ? 1 : -1;
+    }
+
+    // 如果都是number
+    if (isNumber(compA) && isNumber(compB)) {
+      return order == 'asc'
+        ? (((compA as number) - (compB as number)) as number)
+        : (compB as number) - (compA as number);
     }
 
     return order == 'asc'
