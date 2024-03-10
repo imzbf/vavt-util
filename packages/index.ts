@@ -8,3 +8,4 @@ export * from './objectSort';
 export * from './draggingScroll';
 export * from './uuid';
 export * from './number';
+export * from './merge';

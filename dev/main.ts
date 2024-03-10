@@ -6,7 +6,8 @@ import {
   deepClone,
   objectSort,
   objToSearch,
-  searchToObj
+  searchToObj,
+  deepMerge
 } from '~/index';
 
 document.documentElement.addEventListener('click', () => {
@@ -82,3 +83,8 @@ console.table(
 );
 
 console.log('\nisNumber\n', isNumber('0.23e-1'));
+
+const a = { a: 1, b: { c: 2, d: 3 }, e: 4 };
+const b = { a: 1, b: { c: 5, f: 6 }, e: 4 };
+
+console.log(deepMerge(a, b));

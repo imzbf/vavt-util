@@ -1,8 +1,8 @@
 # vavt-util
 
-English \| [中文](https://github.com/imzbf/vavt-util/blob/develop/README-CN.md)
+[English](https://github.com/imzbf/vavt-util) \| 中文
 
-A JavaScript library.
+一个 JavaScript 工具库
 
 ```shell
 yarn add @vavt/util
@@ -10,11 +10,11 @@ yarn add @vavt/util
 npm i @vavt/util
 ```
 
-## Usage
+## 使用
 
 ### deepClone
 
-Can be used for most basic reference types(`Map`, `Set`, `RegExp`, `Date`)
+深克隆，支持大部分基础引用类型
 
 ```js
 const newObj = deepClone({ a: 1 });
@@ -22,30 +22,30 @@ const newObj = deepClone({ a: 1 });
 
 ### debounce
 
-Default delay of 200 ms
+函数防抖，默认延迟 200 毫秒
 
 ```js
 const handler = debounce(() => {
-  // Do something
+  // 做点什么
 }, 100);
 ```
 
 ### linkTo
 
-Open a new page.
+模拟跳转
 
 ```js
 linkTo('https://github.com/imzbf/vavt-util', {
-  // Open on a new window, default true
+  // 是否新窗口打开，默认true
   _blank: false,
-  // Access opener, default true
+  // 是否可访问opener，默认true
   nofollow: false
 });
 ```
 
 ### download
 
-Only can be used for `get` request, or base64
+基础下载，仅支持`get`，同时支持下载`base64`为图片
 
 ```js
 download('https://github.com/imzbf/vavt-util/archive/refs/tags/v1.0.0.zip', 'v1.0.0.zip');
@@ -55,24 +55,24 @@ download('data:image/svg+xml,xxxxx', 'v1.0.0.png');
 
 ### smoothScroll
 
-Smooth scrolling to specified height
+平滑滚动至指定高度
 
 ```js
 smoothScroll(
-  // Scrolling element
+  // 滚动元素
   document.documentElement,
-  // Scroll to 100px
+  // 滚动至100px高度
   100,
-  // Callback at the end of scrolling
+  // 滚动结束回调
   () => {
-    console.log('end');
+    console.log('滚动结束');
   },
-  // Whether to delay the execution of the callback at the end of the scrolling, defalut 100ms
+  // 是否延迟执行滚动结束回调，默认100毫秒
   50
 );
 ```
 
-Create independent scrolling methods
+创建独立的滚动方法
 
 ```js
 import { createSmoothScroll } from '@vavt/util';
@@ -81,17 +81,17 @@ const smoothScroll = createSmoothScroll();
 
 ### throttle
 
-Default delay of 200 ms
+函数节流，默认延迟 200 毫秒
 
 ```js
 const handler = throttle(() => {
-  // Do something
+  // 做点什么
 }, 100);
 ```
 
 ### searchToObj
 
-Convert `location.search` to object
+将`location.search`转换为对象结构
 
 ```js
 searchToObj('?age=18&name=lili&h=1&h=2');
@@ -100,7 +100,7 @@ searchToObj('?age=18&name=lili&h=1&h=2');
 
 ### objToSearch
 
-Convert object to `location.search`
+将对象转换为`location.search`结构
 
 ```js
 objToSearch({ age: 18, name: 'lili', h: [1, 2] });
@@ -109,7 +109,7 @@ objToSearch({ age: 18, name: 'lili', h: [1, 2] });
 
 ### objectSort
 
-Sort object arrays by keyword
+将对象数组进行关键词排序
 
 ```js
 objectSort(
@@ -145,7 +145,7 @@ objectSort(
 
 ### draggingScroll
 
-Dragging and scrolling element while holding it down.
+按住元素时，拖拽滚动元素
 
 ```js
 const removeListener = draggingScroll(document.getElementById('id'));
@@ -155,7 +155,7 @@ const removeListener = draggingScroll(document.getElementById('id'));
 
 ### uuid
 
-Generate a string of random characters.
+生成一串随机字符
 
 ```js
 console.log(uuid());
@@ -164,36 +164,48 @@ console.log(uuid());
 
 ### isNumber
 
-To determine whether a string is a number, Scientific notation will also be considered as a number.
+判断一个字符串是否是数字，科学计数法也会被认为是数字
 
 ```js
 console.log(isNumber('0.23e-1'));
 // true
 ```
 
-...More to be updated
+### deepMerge
 
-## Develop
+深度合并对象，只有对象会被合并，其他类型均会被新的值替换
+
+```js
+const a = { a: 1, b: { c: 2, d: 3 }, e: 4 };
+const b = { a: 1, b: { c: 5, f: 6 }, e: 4 };
+
+console.log(deepMerge(a, b));
+// { a: 1, b: { c: 5, d: 3, f: 6 }, e: 4 }
+```
+
+...更多待更新
+
+## 开发
 
 ```shell
 yarn dev
 ```
 
-### Build
+### 构建
 
 ```shell
-# build es\cjs\umd
+# 同时构建es\cjs\umd版本
 yarn build
 
-# build es
+# 构建指定版本
 yarm build:es
 ```
 
-### Folder
+### 文件夹说明
 
 ```
-/dev             // Debug code
-/packages        // Source code of utils
-  /xxx           // Item of utils
-  /index.ts      // Exported entry
+/dev             // 开发调试代码
+/packages        // 组件库源码
+  /xxx           // 工具
+  /index.ts      // 统一导出
 ```
