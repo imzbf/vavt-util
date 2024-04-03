@@ -7,13 +7,19 @@ import {
   objectSort,
   objToSearch,
   searchToObj,
-  deepMerge
+  deepMerge,
+  throttle
 } from '~/index';
 
+const debounceHandler = debounce(() => {
+  console.log('\n防抖', 'debounce');
+}, 1000);
+const throttleHandler = throttle<any, any>((ddd) => {
+  console.log('\n节流', 'throttle', ddd);
+}, 1000);
 document.documentElement.addEventListener('click', () => {
-  debounce(() => {
-    console.log('\n防抖', 'debounce');
-  });
+  debounceHandler();
+  throttleHandler(1);
 });
 
 console.log('\nSearch转对象', searchToObj('?1=2&dd=123&dd=456'));
