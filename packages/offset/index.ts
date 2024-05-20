@@ -1,4 +1,4 @@
-const getRootOffset = (ele: HTMLElement, rootEle = document.documentElement) => {
+export const getRootOffset = (ele: HTMLElement, rootEle = document.documentElement) => {
   let par = ele.offsetParent as HTMLElement;
   let offsetTop = ele.offsetTop;
   let offsetLeft = ele.offsetLeft;
@@ -11,5 +11,3 @@ const getRootOffset = (ele: HTMLElement, rootEle = document.documentElement) => 
 
   return { offsetTop, offsetLeft };
 };
-
-export default getRootOffset;
