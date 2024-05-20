@@ -183,6 +183,10 @@ console.log(deepMerge(a, b));
 // { a: 1, b: { c: 5, d: 3, f: 6 }, e: 4 }
 ```
 
+### getRootOffset
+
+获取相对位置，默认获取到 html 标签的 offsetTop, offsetLeft
+
 ...更多待更新
 
 ## 开发
