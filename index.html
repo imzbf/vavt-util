@@ -4,10 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@vavt/util</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+    </style>
   </head>
-  <body>
-    <button id="link-to">to github</button>
-    <button id="download">download</button>
+  <body
+    style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"
+  >
+    <div>
+      <button id="link-to">to github</button>
+      <button id="download">download</button>
+      <button id="is-mobile">移动端判断</button>
+    </div>
     <script type="module" src="/dev/main.ts"></script>
   </body>
 </html>

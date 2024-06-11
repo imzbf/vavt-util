@@ -1,3 +1,5 @@
+import { message } from '@vavt/message';
+
 import {
   debounce,
   isNumber,
@@ -8,7 +10,8 @@ import {
   objToSearch,
   searchToObj,
   deepMerge,
-  throttle
+  throttle,
+  isMobile
 } from '~/index';
 
 const debounceHandler = debounce(() => {
@@ -94,3 +97,7 @@ const a = { a: 1, b: { c: 2, d: 3 }, e: 4 };
 const b = { a: 1, b: { c: 5, f: 6 }, e: 4 };
 
 console.log(deepMerge(a, b));
+
+document.getElementById('is-mobile')?.addEventListener('click', () => {
+  message.info(isMobile() ? '是移动端' : '不是移动端');
+});

@@ -10,3 +10,4 @@ export * from './uuid';
 export * from './number';
 export * from './merge';
 export * from './offset';
+export * from './mobile';
