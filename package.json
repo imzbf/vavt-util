@@ -8,11 +8,9 @@
   ],
   "description": "JavaScript library.",
   "scripts": {
-    "dev": "tsx ./scripts/dev",
-    "build": "tsx ./scripts/build.lib",
-    "build:es": "tsx ./scripts/build.lib es",
-    "build:cjs": "tsx ./scripts/build.lib cjs type",
-    "build:umd": "tsx ./scripts/build.lib umd",
+    "dev": "tsx ./scripts/dev.mts",
+    "build": "tsx ./scripts/build.lib.mts && npm run build:type",
+    "build:type": "tsc --declaration --emitDeclarationOnly --declarationDir ./lib/types --strict --moduleResolution Node --module ESNext --target ESNext packages/**/*.ts",
     "lint": "eslint --ext .ts ./",
     "lint:fix": "eslint --fix --ext .ts ./",
     "prepare": "husky install"
@@ -32,19 +30,19 @@
   "main": "./lib/cjs/index.cjs",
   "module": "./lib/es/index.mjs",
   "devDependencies": {
-    "@types/node": "^20.1.0",
+    "@types/node": "^20.14.2",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
+    "@vavt/message": "^1.0.1",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
-    "prettier": "^2.8.8",
-    "tsx": "^3.12.7",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.8",
-    "vite-plugin-dts": "^2.3.0"
+    "prettier": "^3.3.1",
+    "tsx": "^4.15.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.13"
   },
   "lint-staged": {
     "**/*.{ts,md}": [

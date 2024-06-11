@@ -8,13 +8,17 @@ const resolvePath = (p: string) => path.resolve(__dirname, p);
 !(async () => {
   const server = await createServer({
     base: '/',
+    server: {
+      host: '0.0.0.0',
+      port: 6102
+    },
     resolve: {
       alias: {
         '@': resolvePath('dev'),
-        '~': resolvePath('packages'),
-      },
+        '~': resolvePath('packages')
+      }
     },
-    plugins: [],
+    plugins: []
   });
 
   await server.listen();
