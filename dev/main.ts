@@ -11,7 +11,8 @@ import {
   searchToObj,
   deepMerge,
   throttle,
-  isMobile
+  isMobile,
+  randomId
 } from '~/index';
 
 const debounceHandler = debounce(() => {
@@ -101,3 +102,5 @@ console.log(deepMerge(a, b));
 document.getElementById('is-mobile')?.addEventListener('click', () => {
   message.info(isMobile() ? '是移动端' : '不是移动端');
 });
+
+console.log(randomId());

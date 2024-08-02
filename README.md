@@ -151,12 +151,12 @@ const removeListener = draggingScroll(document.getElementById('id'));
 // removeListener()
 ```
 
-### uuid
+### randomId
 
 生成一串随机字符
 
 ```js
-console.log(uuid());
+console.log(randomId());
 // lmsimogsk7pukfcia4
 ```
 

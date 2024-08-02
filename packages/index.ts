@@ -6,7 +6,7 @@ export * from './throttle';
 export * from './urlSearch';
 export * from './objectSort';
 export * from './draggingScroll';
-export * from './uuid';
+export * from './randomId';
 export * from './number';
 export * from './merge';
 export * from './offset';
