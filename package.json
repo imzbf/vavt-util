@@ -31,10 +31,10 @@
   "module": "./lib/es/index.mjs",
   "devDependencies": {
     "@types/node": "^20.14.2",
-    "@typescript-eslint/eslint-plugin": "^5.59.9",
-    "@typescript-eslint/parser": "^5.59.9",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
     "@vavt/message": "^1.0.1",
-    "eslint": "^8.42.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",

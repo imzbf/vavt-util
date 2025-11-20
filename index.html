@@ -1,23 +1,260 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@vavt/util</title>
     <style>
-      html,
+      :root {
+        font-family:
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'PingFang SC',
+          sans-serif;
+        color: #0f172a;
+        background-color: #f5f7fb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        height: 100%;
+        margin: 0;
+        background-color: #f5f7fb;
+      }
+
+      #app {
+        width: min(920px, 100%);
+        margin: 0 auto;
+        padding: 32px 16px 64px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: clamp(26px, 6vw, 36px);
+      }
+
+      header p {
+        margin: 8px auto 0;
+        max-width: 600px;
+        color: #475569;
+        font-size: 0.95rem;
+      }
+
+      .demo-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .demo-card h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .demo-card p.description {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.92rem;
+      }
+
+      .demo-card small.helper {
+        color: #94a3b8;
+        font-size: 0.78rem;
+      }
+
+      .demo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .demo-button {
+        border: 1px solid #1d4ed8;
+        background: #1d4ed8;
+        color: #fff;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .demo-button.secondary {
+        background: #fff;
+        color: #1d4ed8;
+      }
+
+      .demo-output {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        background: #f8fafc;
+        max-height: 280px;
+        overflow: auto;
+      }
+
+      pre {
+        margin: 0;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      table th,
+      table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+      }
+
+      .demo-input {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #cbd5f5;
+        min-width: 210px;
+        background: #fff;
+      }
+
+      .demo-textarea {
+        width: 100%;
+        min-height: 96px;
+        resize: vertical;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #cbd5f5;
+        font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+      }
+
+      .inline-info {
+        font-size: 0.85rem;
+        color: #475569;
+        margin: 0;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #e0e7ff;
+        color: #1d4ed8;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .status-chip.good {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      .status-chip.warn {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .split-layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+      }
+
+      .info-block {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+      }
+
+      .kv-block {
+        margin-bottom: 10px;
+      }
+
+      .kv-block strong {
+        display: inline-block;
+        margin-bottom: 4px;
+        color: #1d4ed8;
+      }
+
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #e0e7ff;
+        color: #1e293b;
+        font-size: 0.8rem;
+      }
+
+      .flex-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 640px) {
+        #app {
+          padding: 24px 14px 48px;
+        }
+
+        .demo-card {
+          padding: 14px;
+        }
       }
     </style>
   </head>
-  <body
-    style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"
-  >
-    <div>
-      <button id="link-to">to github</button>
-      <button id="download">download</button>
-      <button id="is-mobile">移动端判断</button>
+  <body>
+    <div id="app">
+      <header>
+        <h1>@vavt/util playground</h1>
+        <p>实时体验库中常用工具函数，观察节流防抖、深克隆、对象排序等效果，无需再打开控制台。</p>
+      </header>
     </div>
     <script type="module" src="/dev/main.ts"></script>
   </body>
