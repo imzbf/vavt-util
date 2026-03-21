@@ -3,6 +3,12 @@ const isPlainObject = (item: unknown): item is Record<string, unknown> => {
   return item !== null && typeof item === 'object' && !Array.isArray(item);
 };
 
+const UNSAFE_MERGE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+const isSafeMergeKey = (key: string): boolean => {
+  return !UNSAFE_MERGE_KEYS.has(key);
+};
+
 interface DeepMergeOptions {
   excludeKeys?: (key: string) => boolean;
 }
@@ -21,26 +27,33 @@ export const deepMerge = <T extends object, U extends object>(
   }
 
   const { excludeKeys } = options;
+  const targetRecord = target as Record<string, unknown>;
+  const sourceRecord = source as Record<string, unknown>;
 
-  for (const key in source) {
-    const sourceValue = source[key];
-    const targetValue = (target as any)[key];
+  // 只处理 source 自身的可枚举属性，并过滤原型链污染相关的危险 key。
+  for (const key of Object.keys(sourceRecord)) {
+    if (!isSafeMergeKey(key)) {
+      continue;
+    }
+
+    const sourceValue = sourceRecord[key];
+    const targetValue = targetRecord[key];
 
     // 如果匹配到过滤规则，则直接替换，不进行深度合并
     if (excludeKeys && excludeKeys(key)) {
-      (target as any)[key] = sourceValue;
+      targetRecord[key] = sourceValue;
     } else if (Array.isArray(sourceValue) && Array.isArray(targetValue)) {
-      (target as any)[key] = mergeArrays(targetValue, sourceValue, options);
+      targetRecord[key] = mergeArrays(targetValue, sourceValue, options);
     } else if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
       // 递归深度合并
-      (target as any)[key] = deepMerge(
+      targetRecord[key] = deepMerge(
         targetValue as Record<string, unknown>,
         sourceValue as Record<string, unknown>,
         options
       );
     } else {
       // 直接替换
-      (target as any)[key] = sourceValue;
+      targetRecord[key] = sourceValue;
     }
   }
 

@@ -11,6 +11,7 @@
     "dev": "tsx ./scripts/dev.mts",
     "build": "tsx ./scripts/build.lib.mts && npm run build:type",
     "build:type": "tsc --declaration --emitDeclarationOnly --declarationDir ./lib/types --strict --moduleResolution Node --module ESNext --target ESNext packages/**/*.ts",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "lint": "eslint --ext .ts ./",
     "lint:fix": "eslint --fix --ext .ts ./",
     "prepare": "husky install"
