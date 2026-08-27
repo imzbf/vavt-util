@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { deepMerge } from '../packages/merge';
+import { deepMerge } from '../packages/merge/index.ts';
 
 test('deepMerge keeps normal nested merge behavior', () => {
   const target = { a: 1, nested: { keep: true, value: 1 } };

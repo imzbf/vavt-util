@@ -3,8 +3,6 @@
 一个 JavaScript 工具库
 
 ```shell
-yarn add @vavt/util
-# or
 npm i @vavt/util
 ```
 
@@ -217,18 +215,37 @@ interface MobileCheckOptions {
 
 ## 开发
 
+需要 Node.js >= 23.6，直接由 Node 原生执行 TypeScript，无需额外的运行时转译工具。
+
 ```shell
-yarn dev
+npm install
+
+npm run dev
 ```
 
 ### 构建
 
 ```shell
 # 同时构建es\cjs\umd版本
-yarn build
+npm run build
 
-# 构建指定版本
-yarm build:es
+# 仅构建类型声明
+npm run build:type
+```
+
+### 测试与检查
+
+```shell
+# 单元测试，由 node:test 直接运行 .ts
+npm test
+
+# 代码检查
+npm run lint
+npm run lint:fix
+
+# 格式化
+npm run format
+npm run format:check
 ```
 
 ### 文件夹说明
