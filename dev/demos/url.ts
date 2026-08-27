@@ -13,14 +13,9 @@ import {
 } from '@/ui/components';
 
 export const registerUrlDemos = (app: HTMLElement): void => {
-  const searchCard = createDemoCard(
-    app,
-    'Search ↔ Object',
-    'objToSearch 与 searchToObj 双向演示',
-    {
-      badge: 'URL'
-    }
-  );
+  const searchCard = createDemoCard(app, 'Search ↔ Object', 'objToSearch 与 searchToObj 双向演示', {
+    badge: 'URL'
+  });
 
   insertHelperAboveActions(searchCard, createHelperText('任意修改输入，两侧结果会实时更新。'));
 

@@ -8,7 +8,7 @@ export const linkTo = (
   href: string,
   option = {
     _blank: true,
-    nofollow: true,
+    nofollow: true
   }
 ) => {
   const a = document.createElement('a');

@@ -1,5 +1,3 @@
-/* eslint-disable indent */
-
 import { isNumber } from '..';
 
 /**
@@ -35,12 +33,12 @@ export const objectSort = <T>(
 
     // 如果都是number
     if (isNumber(compA) && isNumber(compB)) {
-      return order == 'asc'
+      return order === 'asc'
         ? (((compA as number) - (compB as number)) as number)
         : (compB as number) - (compA as number);
     }
 
-    return order == 'asc'
+    return order === 'asc'
       ? String(compA).localeCompare(String(compB), undefined, {
           numeric: true
         })
