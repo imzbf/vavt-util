@@ -1,7 +1,7 @@
 interface LinkToOptions {
-  /** 是否新窗口打开，默认 true */
+  /** 是否新窗口打开，省略整个配置对象时默认为 true */
   _blank?: boolean;
-  /** 是否禁止新窗口访问 opener（rel="noopener noreferrer"），默认 true */
+  /** 是否禁止新窗口访问 opener（rel="noopener noreferrer"），省略整个配置对象时默认为 true */
   nofollow?: boolean;
 }
 
@@ -25,18 +25,16 @@ const clickAnchor = (a: HTMLAnchorElement) => {
  * @param href 跳转链接
  * @param option 是否新窗口打开、是否取消跟踪
  */
-export const linkTo = (href: string, option: LinkToOptions = {}) => {
-  // 逐项取默认值，避免只传一项时另一项变成 undefined
-  const { _blank = true, nofollow = true } = option;
-
+export const linkTo = (href: string, option: LinkToOptions = { _blank: true, nofollow: true }) => {
+  // 2.x 只在整个配置对象省略时使用默认值，已传对象中的缺失字段保持假值。
   const a = document.createElement('a');
   a.href = href;
 
-  if (_blank) {
+  if (option._blank) {
     a.target = '_blank';
   }
 
-  if (nofollow) {
+  if (option.nofollow) {
     a.rel = 'noopener noreferrer';
   }
 

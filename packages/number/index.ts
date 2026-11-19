@@ -1,8 +1,8 @@
 /**
- * 校验内容是不是数字，支持数字、bigint 与数字字符串（含科学计数法、0x 进制）
+ * 校验内容能否转换为有限数字，支持科学计数法、0x 进制等数字字符串
  *
- * 只接受基础类型：数组、Date、对象等引用类型一律返回 false，
- * 避免 `[5]`、`new Date()` 这类值因隐式转换被误判为数字。
+ * 保留 2.x 的数值转换规则：[5]、有效 Date、可转换为数字的对象也可以通过。
+ * 空白内容、null、undefined、boolean、symbol 与非有限数值返回 false。
  *
  * @param v 需要确认的内容
  * @returns 是否为合法数字
@@ -12,15 +12,15 @@ export const isNumber = (v: unknown): boolean => {
     return Number.isFinite(v);
   }
 
-  if (typeof v === 'bigint') {
-    return true;
-  }
-
-  // 排除空字符串与纯空格字符串，它们会被 Number() 转成 0
-  if (typeof v !== 'string' || /^\s*$/.test(v)) {
+  if (v === null || v === undefined || typeof v === 'boolean' || typeof v === 'symbol') {
     return false;
   }
 
-  // Number.isFinite 同时排除了 NaN 与 Infinity
-  return Number.isFinite(Number(v));
+  try {
+    // 沿用先检查 toString 再转换的顺序，空数组等空白内容仍然不能通过。
+    return !/^\s*$/.test(v.toString()) && Number.isFinite(Number(v));
+  } catch {
+    // 自定义转换方法可能抛错，校验函数将这种值视为不可转换。
+    return false;
+  }
 };

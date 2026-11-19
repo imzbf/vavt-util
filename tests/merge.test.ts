@@ -58,7 +58,7 @@ test('deepMerge replaces Date instead of recursing into it', () => {
   assert.equal(result.d.toISOString(), '2021-06-06T00:00:00.000Z');
 });
 
-test('deepMerge replaces RegExp, Map, Set and class instances', () => {
+test('deepMerge replaces RegExp, Map and Set while merging class fields', () => {
   class Box {
     v: number;
 
@@ -79,6 +79,8 @@ test('deepMerge replaces RegExp, Map, Set and class instances', () => {
     set: new Set([2]),
     box: new Box(2)
   };
+  const originalBox = target.box;
+  Object.assign(originalBox, { keep: true });
 
   const result = deepMerge(target, source);
 
@@ -87,6 +89,8 @@ test('deepMerge replaces RegExp, Map, Set and class instances', () => {
   assert.deepEqual([...result.set], [2]);
   assert.equal(result.box.v, 2);
   assert.ok(result.box instanceof Box);
+  assert.equal(result.box, originalBox);
+  assert.equal((result.box as Box & { keep: boolean }).keep, true);
 });
 
 test('deepMerge survives circular references on both sides', () => {
@@ -127,4 +131,92 @@ test('deepMerge excludeKeys replaces instead of deep merging', () => {
   );
 
   assert.deepEqual(result, { keep: { a: 1, b: 2 }, raw: { b: 2 } });
+});
+
+test('deepMerge preserves classes with a custom toStringTag', () => {
+  class Config {
+    get [Symbol.toStringTag]() {
+      return 'Config';
+    }
+    nested = { keep: true };
+  }
+  const config = new Config();
+  const result = deepMerge({ config }, { config: { nested: { added: true } } });
+
+  assert.equal(result.config, config);
+  assert.deepEqual(result.config.nested, { keep: true, added: true });
+});
+
+test('deepMerge keeps distinct target branches when the source object is shared', () => {
+  const shared = { added: true };
+  const a = { aOnly: 1 };
+  const b = { bOnly: 2 };
+  const target = { a, b };
+  const result = deepMerge(target, { a: shared, b: shared });
+
+  assert.equal(result, target);
+  assert.equal(result.a, a);
+  assert.equal(result.b, b);
+  assert.deepEqual(result, { a: { aOnly: 1, added: true }, b: { bOnly: 2, added: true } });
+});
+
+test('deepMerge keeps distinct target arrays when the source array is shared', () => {
+  const shared = [{ added: true }];
+  const result = deepMerge(
+    { a: [{ aOnly: 1 }, 'a-tail'], b: [{ bOnly: 2 }, 'b-tail'] },
+    { a: shared, b: shared }
+  );
+
+  assert.notEqual(result.a, result.b);
+  assert.deepEqual(result, {
+    a: [{ aOnly: 1, added: true }, 'a-tail'],
+    b: [{ bOnly: 2, added: true }, 'b-tail']
+  });
+});
+
+test('deepMerge handles cycles independently for shared source branches', () => {
+  const shared: Record<string, unknown> = { added: true };
+  shared.self = shared;
+  const a: Record<string, unknown> = { keep: 'a' };
+  a.self = a;
+  const b: Record<string, unknown> = { keep: 'b' };
+  b.self = b;
+
+  const result = deepMerge({ a, b }, { a: shared, b: shared });
+  assert.equal(result.a.self, result.a);
+  assert.equal(result.b.self, result.b);
+  assert.equal(result.a.keep, 'a');
+  assert.equal(result.b.keep, 'b');
+  assert.notEqual(result.a, result.b);
+});
+
+test('deepMerge returns a new root array and leaves its original entries intact', () => {
+  const target = [1, 2];
+  const result = deepMerge(target, [3]);
+  assert.notEqual(result, target);
+  assert.deepEqual(target, [1, 2]);
+  assert.deepEqual(result, [3, 2]);
+});
+
+test('deepMerge supports root array cycles and skips source holes', () => {
+  const target: unknown[] = [];
+  target.push(target, 'keep');
+  const source: unknown[] = new Array(2);
+  source[0] = source;
+
+  const result = deepMerge(target, source);
+  assert.equal(result[0], result);
+  assert.equal(result[1], 'keep');
+  assert.equal(target[0], target);
+});
+
+test('deepMerge keeps source references for replacements and new branches', () => {
+  const shared = { added: true };
+  const result = deepMerge(
+    { replaced: { old: true } },
+    { replaced: shared, newBranch: shared },
+    { excludeKeys: (key) => key === 'replaced' }
+  );
+  assert.equal(result.replaced, shared);
+  assert.equal(result.newBranch, shared);
 });

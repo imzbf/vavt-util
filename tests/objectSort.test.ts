@@ -35,14 +35,12 @@ test('objectSort matches the documented README ordering', () => {
   ]);
 });
 
-test('objectSort does not mutate the input list', () => {
+test('objectSort sorts in place and returns the input list as in 2.x', () => {
   const input = [{ v: 3 }, { v: 1 }, { v: 2 }];
-  const snapshot = [...input];
 
   const sorted = objectSort(input, (item) => item.v);
 
-  assert.notEqual(sorted, input);
-  assert.deepEqual(input, snapshot);
+  assert.equal(sorted, input);
   assert.deepEqual(
     sorted.map((i) => i.v),
     [1, 2, 3]
@@ -99,4 +97,72 @@ test('objectSort is stable for equal keys', () => {
   ];
 
   assert.deepEqual(names(objectSort(input, (item) => item.v)), ['first', 'second', 'third']);
+});
+
+test('objectSort keeps equal nullish values stable in either direction', () => {
+  const input = [
+    { name: 'null-1', v: null },
+    { name: 'undefined-1', v: undefined },
+    { name: 'null-2', v: null },
+    { name: 'undefined-2', v: undefined }
+  ];
+
+  assert.deepEqual(names(objectSort([...input], (item) => item.v)), [
+    'undefined-1',
+    'undefined-2',
+    'null-1',
+    'null-2'
+  ]);
+  assert.deepEqual(names(objectSort([...input], (item) => item.v, 'desc')), [
+    'null-1',
+    'null-2',
+    'undefined-1',
+    'undefined-2'
+  ]);
+});
+
+test('objectSort compares bigint without losing precision', () => {
+  const input = [{ v: 9007199254740993n }, { v: 9007199254740992n }, { v: 1n }];
+  assert.deepEqual(
+    objectSort(input, (item) => item.v).map((item) => item.v),
+    [1n, 9007199254740992n, 9007199254740993n]
+  );
+  assert.deepEqual(
+    objectSort(input, (item) => item.v, 'desc').map((item) => item.v),
+    [9007199254740993n, 9007199254740992n, 1n]
+  );
+});
+
+test('objectSort preserves numeric coercion and stability across numeric types', () => {
+  const input = [
+    { name: 'date', v: new Date(5) },
+    { name: 'array', v: [3] },
+    { name: 'object', v: { valueOf: () => 2 } },
+    { name: 'bigint', v: 1n },
+    { name: 'number', v: 1 },
+    { name: 'string', v: '1' }
+  ];
+
+  assert.deepEqual(names(objectSort(input, (item) => item.v)), [
+    'bigint',
+    'number',
+    'string',
+    'object',
+    'array',
+    'date'
+  ]);
+});
+
+test('objectSort keeps localeCompare ordering for non-numeric strings', () => {
+  const input = ['item-10', 'item-2', '条目20', '条目3', 'Éclair', 'eclair', 'Ä', 'a'];
+  for (const order of ['asc', 'desc'] as const) {
+    const direction = order === 'asc' ? 1 : -1;
+    const expected = [...input].sort(
+      (a, b) => a.localeCompare(b, undefined, { numeric: true }) * direction
+    );
+    assert.deepEqual(
+      objectSort([...input], (item) => item, order),
+      expected
+    );
+  }
 });

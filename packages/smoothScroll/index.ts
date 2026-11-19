@@ -38,8 +38,16 @@ export const createSmoothScroll = () => {
     cb?: () => void,
     timeout: number | boolean = 100
   ) => {
+    let settled = false;
     const cbHandler = () => {
-      pendingCb = null;
+      if (settled) {
+        return;
+      }
+      settled = true;
+
+      if (pendingCb === cbHandler) {
+        pendingCb = null;
+      }
 
       if (cb) {
         if (typeof timeout === 'number') {
@@ -50,11 +58,10 @@ export const createSmoothScroll = () => {
       }
     };
 
+    const interruptedCb = pendingCb;
     if (rafTimer !== -1) {
       cancelRaf(rafTimer);
       rafTimer = -1;
-      // 结算被打断的那一次滚动的回调，而不是本次的
-      pendingCb?.();
     }
 
     pendingCb = cbHandler;
@@ -63,6 +70,9 @@ export const createSmoothScroll = () => {
     let scrollTop = ele.scrollTop;
 
     const scrollHandler = () => {
+      if (pendingCb !== cbHandler) {
+        return;
+      }
       rafTimer = -1;
       // 距离目标距离
       const distance = top - scrollTop;
@@ -74,11 +84,16 @@ export const createSmoothScroll = () => {
         cbHandler();
       } else {
         ele.scrollTo(0, scrollTop);
-        rafTimer = raf(scrollHandler);
+        if (pendingCb === cbHandler) {
+          rafTimer = raf(scrollHandler);
+        }
       }
     };
 
     rafTimer = raf(scrollHandler);
+
+    // 先安装本次动画，再结算上次回调。回调重入时，新调用能取消当前动画，保持最后一次调用生效。
+    interruptedCb?.();
   };
 
   return smoothScroll;

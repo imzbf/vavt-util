@@ -1,25 +1,14 @@
 /**
- * 解码单个片段，遇到非法百分号转义（如 `%E4%B8`）时退回原文，避免抛出 URIError。
- */
-const safeDecode = (raw: string): string => {
-  // 查询串中 '+' 表示空格
-  const normalized = raw.replace(/\+/g, ' ');
-
-  try {
-    return decodeURIComponent(normalized);
-  } catch {
-    return normalized;
-  }
-};
-
-/**
  * location.search 转对象，同名 key 会聚合为数组
  *
+ * 沿用 decodeURIComponent：保留字面量 '+'，非法百分号转义抛出 URIError。
+ *
  * @param search location.search eg: '?age=18&name=lili'
- * @param decode 是否需要解密
+ * @param decode 是否需要解码
  * @returns 解析后的对象
  */
-export const searchToObj = (search: string, decode = true): Record<string, string | string[]> => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 保留 2.x 的公开返回类型，兼容调用方已有的字段类型赋值
+export const searchToObj = (search: string, decode = true): Record<string, any> => {
   if (!search) {
     return {};
   }
@@ -44,8 +33,8 @@ export const searchToObj = (search: string, decode = true): Record<string, strin
         return;
       }
 
-      const key = decode ? safeDecode(rKey) : rKey;
-      const value = decode ? safeDecode(rValue) : rValue;
+      const key = decode ? decodeURIComponent(rKey) : rKey;
+      const value = decode ? decodeURIComponent(rValue) : rValue;
 
       const existed = obj[key];
 
@@ -64,39 +53,37 @@ export const searchToObj = (search: string, decode = true): Record<string, strin
 };
 
 /**
- * 对象转 search，`undefined` 与 `null`（含数组项）会被忽略
+ * 对象转 search，`undefined` 与 `null`（含数组项）沿用 2.x 的字符串化行为
  *
  * @param obj 待转化对象
- * @param encode 是否加密 默认true
+ * @param encode 是否编码 默认true
  * @returns search 字符串，不含前导 '?'
  */
-export const objToSearch = (obj: Record<string, unknown>, encode = true): string => {
+export const objToSearch = (obj: unknown, encode = true): string => {
   if (!obj) {
     return '';
   }
 
-  const pairs: string[] = [];
+  // 入参不要求索引签名，已有 interface、数组等调用方式仍可通过类型检查。
+  const record = obj as Record<string, unknown>;
 
-  Object.keys(obj).forEach((key) => {
-    const value = obj[key];
-    const rKey = encode ? encodeURIComponent(key) : key;
+  return Object.keys(record)
+    .map((key) => {
+      const value = record[key];
+      const rKey = encode ? encodeURIComponent(key) : key;
 
-    const pushPair = (item: unknown) => {
-      // 空值不参与拼接，避免出现 'a=undefined'
-      if (item === undefined || item === null) {
-        return;
+      if (Array.isArray(value)) {
+        // map + join 保留稀疏数组和空数组原有的分隔符行为。
+        return value
+          .map((item: unknown) => {
+            const rValue = encode ? encodeURIComponent(item as string) : item;
+            return `${rKey}=${rValue}`;
+          })
+          .join('&');
       }
 
-      const rValue = encode ? encodeURIComponent(String(item)) : String(item);
-      pairs.push(`${rKey}=${rValue}`);
-    };
-
-    if (Array.isArray(value)) {
-      value.forEach(pushPair);
-    } else {
-      pushPair(value);
-    }
-  });
-
-  return pairs.join('&');
+      const rValue = encode ? encodeURIComponent(value as string) : value;
+      return `${rKey}=${rValue}`;
+    })
+    .join('&');
 };

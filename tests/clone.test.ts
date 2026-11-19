@@ -26,7 +26,7 @@ test('deepClone deep-copies nested structures', () => {
   assert.notEqual(cloned.nested.list, source.nested.list);
 });
 
-test('deepClone preserves the prototype of class instances', () => {
+test('deepClone keeps the 2.x plain-object snapshot of class instances', () => {
   class Foo {
     x = 1;
     hi() {
@@ -36,9 +36,10 @@ test('deepClone preserves the prototype of class instances', () => {
 
   const cloned = deepClone(new Foo());
 
-  assert.ok(cloned instanceof Foo);
-  assert.equal(cloned.hi(), 'hi');
-  assert.equal(cloned.x, 1);
+  assert.equal(Object.getPrototypeOf(cloned), Object.prototype);
+  assert.equal(cloned instanceof Foo, false);
+  assert.equal('hi' in cloned, false);
+  assert.deepEqual(cloned, { x: 1 });
 });
 
 test('deepClone handles Date, RegExp, Map and Set', () => {
@@ -108,4 +109,82 @@ test('deepClone preserves array holes and clones typed arrays', () => {
 test('deepClone returns functions by reference', () => {
   const fn = () => 1;
   assert.equal(deepClone({ fn }).fn, fn);
+});
+
+test('deepClone preserves Map keys by reference and clones values', () => {
+  const key = { id: 1 };
+  const value = { nested: { count: 2 } };
+  const source = new Map([[key, value]]);
+  const cloned = deepClone(source);
+
+  assert.equal([...cloned.keys()][0], key);
+  assert.deepEqual(cloned.get(key), value);
+  assert.notEqual(cloned.get(key), value);
+  assert.notEqual(cloned.get(key)?.nested, value.nested);
+});
+
+test('deepClone evaluates enumerable getters once and snapshots their values', () => {
+  let reads = 0;
+  const value = { count: 1 };
+  const source = {
+    get data() {
+      reads += 1;
+      return value;
+    }
+  };
+  const cloned = deepClone(source);
+  value.count = 2;
+
+  assert.equal(reads, 1);
+  assert.deepEqual(cloned.data, { count: 1 });
+  assert.equal(Object.getOwnPropertyDescriptor(cloned, 'data')?.get, undefined);
+  assert.equal(reads, 1);
+});
+
+test('deepClone supports cached getters that shadow a prototype accessor', () => {
+  class CachedModel {
+    get data(): { nested: number } {
+      const value = { nested: 42 };
+      Object.defineProperty(this, 'data', { value, enumerable: true });
+      return value;
+    }
+  }
+  const source = new CachedModel();
+  const data = source.data;
+  const cloned = deepClone(source);
+
+  assert.deepEqual(cloned, { data: { nested: 42 } });
+  assert.notEqual(cloned.data, data);
+});
+
+for (const BufferType of [ArrayBuffer, SharedArrayBuffer]) {
+  test(`deepClone preserves offsets and shared backing storage for ${BufferType.name} views`, () => {
+    const buffer = new BufferType(16);
+    const bytes = new Uint8Array(buffer, 2, 6);
+    bytes.set([1, 2, 3, 4, 5, 6]);
+    const source = { buffer, bytes, view: new DataView(buffer, 4, 4) };
+    const cloned = deepClone(source);
+
+    assert.ok(cloned.buffer instanceof BufferType);
+    assert.notEqual(cloned.buffer, buffer);
+    assert.equal(cloned.bytes.buffer, cloned.buffer);
+    assert.equal(cloned.view.buffer, cloned.buffer);
+    assert.equal(cloned.bytes.byteOffset, 2);
+    assert.equal(cloned.bytes.length, 6);
+    assert.equal(cloned.view.byteOffset, 4);
+    assert.equal(cloned.view.byteLength, 4);
+    assert.deepEqual([...cloned.bytes], [1, 2, 3, 4, 5, 6]);
+    cloned.view.setUint8(0, 9);
+    assert.equal(cloned.bytes[2], 9);
+    assert.equal(bytes[2], 3);
+  });
+}
+
+test('deepClone copies an own __proto__ as data without changing the prototype', () => {
+  const source = JSON.parse('{"__proto__":{"polluted":true}}');
+  const cloned = deepClone(source);
+  assert.equal(Object.getPrototypeOf(cloned), Object.prototype);
+  assert.equal(Object.hasOwn(cloned, '__proto__'), true);
+  assert.deepEqual(cloned.__proto__, { polluted: true });
+  assert.equal(cloned.polluted, undefined);
 });

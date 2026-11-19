@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { debounce } from '../packages/debounce/index.ts';
 import { throttle } from '../packages/throttle/index.ts';
+import { mockAnimationFrame } from './helpers/animationFrame.ts';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -106,4 +107,72 @@ test('throttle preserves the caller this binding', async () => {
   await wait(100);
 
   assert.equal(obj.seen, 5);
+});
+
+test('debounce rejects synchronous callback errors and can restart', async () => {
+  const error = new Error('callback failed');
+  const fn = debounce<number, void>((n) => {
+    if (n === 1) {
+      throw error;
+    }
+  }, 1);
+
+  await assert.rejects(fn(1), (reason) => reason === error);
+  assert.equal(await fn(2), 'done');
+});
+
+test('debounce preserves a call scheduled from inside its callback', async () => {
+  const calls: number[] = [];
+  let next: Promise<unknown> | undefined;
+  const fn = debounce<number, void>((n) => {
+    calls.push(n);
+    if (n === 1) {
+      next = fn(2);
+    }
+  }, 1);
+
+  assert.equal(await fn(1), 'done');
+  assert.equal(await next, 'done');
+  assert.deepEqual(calls, [1, 2]);
+});
+
+test('throttle uses one SSR timer per window and does not postpone the deadline', (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const timer = t.mock.method(globalThis, 'setTimeout');
+  const calls: number[] = [];
+  const fn = throttle((n: number) => calls.push(n), 10000);
+
+  fn(1);
+  t.mock.timers.tick(9000);
+  fn(2);
+  t.mock.timers.tick(999);
+  assert.deepEqual(calls, []);
+  t.mock.timers.tick(1);
+  assert.deepEqual(calls, [2]);
+  assert.equal(timer.mock.callCount(), 1);
+});
+
+test('throttle keeps RAF timing, trailing params and callback reentry in browsers', (t) => {
+  const frames = mockAnimationFrame(t);
+  const calls: number[] = [];
+  const fn = throttle<number, void>((n) => {
+    calls.push(n);
+    if (n === 2) {
+      fn(3);
+    }
+  }, 20);
+
+  fn(1);
+  frames.step(0);
+  frames.step(19);
+  fn(2);
+  assert.deepEqual(calls, []);
+  assert.equal(frames.size, 1);
+  frames.step(20);
+  assert.deepEqual(calls, [2]);
+  assert.equal(frames.size, 1);
+  frames.step(30);
+  frames.step(50);
+  assert.deepEqual(calls, [2, 3]);
+  assert.equal(frames.size, 0);
 });

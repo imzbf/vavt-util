@@ -11,6 +11,8 @@ const clamp = (value: number, max: number): number => {
  * @returns 移除相关监听的方法
  */
 export const draggingScroll = (ele: HTMLElement) => {
+  const doc = ele.ownerDocument;
+  const view = doc.defaultView;
   // 记录本次拖动注册的清理逻辑，便于外部提前解绑
   let stopDragging: (() => void) | null = null;
 
@@ -20,13 +22,15 @@ export const draggingScroll = (ele: HTMLElement) => {
       return;
     }
 
-    const { scrollHeight, scrollWidth, offsetHeight, offsetWidth, scrollLeft, scrollTop } = ele;
+    // 上次可能在窗口外松开鼠标；先还原样式与监听，再保存本次拖动的初始状态。
+    stopDragging?.();
+    const { scrollHeight, scrollWidth, clientHeight, clientWidth, scrollLeft, scrollTop } = ele;
 
     const x = mdown.clientX;
     const y = mdown.clientY;
 
-    const topScrollMax = scrollHeight - offsetHeight;
-    const leftScrollMax = scrollWidth - offsetWidth;
+    const topScrollMax = scrollHeight - clientHeight;
+    const leftScrollMax = scrollWidth - clientWidth;
 
     // 拖动时禁止选中文本，结束后还原
     const originalUserSelect = ele.style.userSelect;
@@ -41,13 +45,15 @@ export const draggingScroll = (ele: HTMLElement) => {
 
     const mouseUpHandler = () => {
       ele.style.userSelect = originalUserSelect;
-      document.removeEventListener('mousemove', mouseMoveHandler);
-      document.removeEventListener('mouseup', mouseUpHandler);
+      doc.removeEventListener('mousemove', mouseMoveHandler);
+      doc.removeEventListener('mouseup', mouseUpHandler);
+      view?.removeEventListener('blur', mouseUpHandler);
       stopDragging = null;
     };
 
-    document.addEventListener('mousemove', mouseMoveHandler);
-    document.addEventListener('mouseup', mouseUpHandler);
+    doc.addEventListener('mousemove', mouseMoveHandler);
+    doc.addEventListener('mouseup', mouseUpHandler);
+    view?.addEventListener('blur', mouseUpHandler);
     stopDragging = mouseUpHandler;
   };
 

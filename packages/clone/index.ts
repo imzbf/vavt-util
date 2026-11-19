@@ -26,8 +26,9 @@ const cloneRegExp = (re: RegExp): RegExp => {
 /**
  * 针对常见的数据类型进行深克隆，支持循环引用
  *
- * 支持 Date、RegExp、Map、Set、Array、TypedArray、ArrayBuffer 与普通对象；
- * 类实例会保留原型链，Symbol 键也会被复制。函数按引用返回（不克隆）。
+ * 支持 Date、RegExp、Map、Set、Array、TypedArray、ArrayBuffer、SharedArrayBuffer；
+ * 普通对象与类实例按自身可枚举属性生成普通对象快照，getter 会取值，Symbol 键也会复制。
+ * Map 的键与函数沿用 2.x 的引用保留规则。
  *
  * @param obj
  * @returns
@@ -60,7 +61,7 @@ export const deepClone = <T>(obj: T, hash = new WeakMap<object, unknown>()): T =
     const clonedMap = new Map();
     hash.set(ref, clonedMap);
     obj.forEach((value, key) => {
-      clonedMap.set(deepClone(key, hash), deepClone(value, hash));
+      clonedMap.set(key, deepClone(value, hash));
     });
     return clonedMap as T;
   }
@@ -74,7 +75,10 @@ export const deepClone = <T>(obj: T, hash = new WeakMap<object, unknown>()): T =
     return clonedSet as T;
   }
 
-  if (obj instanceof ArrayBuffer) {
+  if (
+    obj instanceof ArrayBuffer ||
+    (typeof SharedArrayBuffer !== 'undefined' && obj instanceof SharedArrayBuffer)
+  ) {
     const clonedBuffer = obj.slice(0);
     hash.set(ref, clonedBuffer);
     return clonedBuffer as T;
@@ -104,8 +108,8 @@ export const deepClone = <T>(obj: T, hash = new WeakMap<object, unknown>()): T =
     return clonedArr as T;
   }
 
-  // 保留原型链，让类实例克隆后依然是同一个类的实例
-  const clonedObj = Object.create(Object.getPrototypeOf(ref)) as Record<string | symbol, unknown>;
+  // 2.x 将类实例也转成普通对象；保留原型会改变方法调用与 getter 的既有语义。
+  const clonedObj: Record<string | symbol, unknown> = {};
   hash.set(ref, clonedObj);
 
   // Reflect.ownKeys 同时覆盖字符串键与 Symbol 键
@@ -116,12 +120,13 @@ export const deepClone = <T>(obj: T, hash = new WeakMap<object, unknown>()): T =
       continue;
     }
 
-    // getter/setter 原样保留，不触发取值
-    if (descriptor.get || descriptor.set) {
-      Object.defineProperty(clonedObj, key, descriptor);
-    } else {
-      clonedObj[key] = deepClone(descriptor.value, hash);
-    }
+    // 读取 getter 得到快照，并显式定义数据属性，避免触发 __proto__ 等继承的 setter。
+    Object.defineProperty(clonedObj, key, {
+      value: deepClone((ref as Record<string | symbol, unknown>)[key], hash),
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   }
 
   return clonedObj as T;
